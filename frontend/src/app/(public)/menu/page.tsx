@@ -55,13 +55,12 @@ export default function MenuPage() {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearch(value);
+    setSearch(e.target.value);
     if (debouncedSearch.current) {
       clearTimeout(debouncedSearch.current);
     }
     debouncedSearch.current = setTimeout(() => {
-      setProductName(value);
+      setProductName(e.target.value);
       setPage(1);
     }, 500);
   };

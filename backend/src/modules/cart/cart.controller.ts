@@ -23,9 +23,16 @@ export async function decrementCart(
   res: Response,
 ): Promise<void> {
   try {
-    const { variantId } = req.body as { variantId: string };
+    const { cartId, variantId } = req.body as {
+      cartId: string;
+      variantId: string;
+    };
     const guestId = req.guestId as string;
-    const { data } = await cartService.decrementCart(variantId, guestId);
+    const { data } = await cartService.decrementCart(
+      cartId,
+      variantId,
+      guestId,
+    );
     res.status(200).json({ message: "decrement cart", data });
   } catch (error) {
     if (error instanceof AppError) {
@@ -39,9 +46,13 @@ export async function decrementCart(
 export async function findCarts(req: Request, res: Response): Promise<void> {
   try {
     const guestId = req.guestId as string;
-    const { data } = await cartService.findCarts(guestId);
-    res.status(200).json({ message: "find guest carts", data });
+    const { data, totalItem, totalPrice } =
+      await cartService.findCarts(guestId);
+    res
+      .status(200)
+      .json({ message: "find guest carts", data, totalItem, totalPrice });
   } catch (error) {
+    console.log(error);
     if (error instanceof AppError) {
       res.status(error.statusCode).json({ message: error.message });
     } else {

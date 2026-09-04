@@ -34,8 +34,11 @@ export default function ProductCard({ data }: ProductProps) {
         </CardContent>
         <CardFooter className="flex items-center justify-between">
           <p>Rp.{data.variant[0]?.price}K</p>
-          <Button variant="default">
-            <span className="text-xs">Add to cart</span>
+          <Button
+            variant="default"
+            onClick={() => router.push(`/menu/${data.id}`)}
+          >
+            Detail
           </Button>
         </CardFooter>
       </Card>

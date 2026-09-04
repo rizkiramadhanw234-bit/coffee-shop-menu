@@ -2,13 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useFindProductById } from "@/hooks/product.hook";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import {
@@ -16,18 +10,19 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { SpinnerCustom } from "@/components/loading";
+import { useAddToCart } from "@/hooks/cart.hook";
+import { FaArrowLeft } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function DetailPage() {
+  const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading } = useFindProductById(id);
   const productData = product ?? null;
-
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
-    null,
-  );
+  const [selectedVariantId, setSelectedVariantId] = useState("");
   const [count, setCount] = useState(1);
 
-  const variantProduct = productData?.variant.find(
+  const productVariant = productData?.variant.find(
     (data) => data.id === selectedVariantId,
   );
 
@@ -37,8 +32,22 @@ export default function DetailPage() {
 
   const handleIncrement = () => setCount(count + 1);
   const handleDecrement = () => setCount(count - 1 || 1);
+  const totalPrice = (productVariant?.price ?? 0) * count;
 
-  const totalPrice = (variantProduct?.price ?? 0) * count;
+  // add to cart mutation
+  const { mutateAsync: addToCart, isPending, isError } = useAddToCart();
+  const handleAddToCart = async () => {
+    try {
+      if (!selectedVariantId) {
+        return alert("Please select variant");
+      }
+      await addToCart({ variantId: selectedVariantId, qty: count });
+      alert("added to cart!");
+    } catch (error) {
+      console.error(error, isError);
+      alert("something went wrong");
+    }
+  };
 
   return (
     <>
@@ -48,6 +57,13 @@ export default function DetailPage() {
         </div>
       ) : (
         <div className="md:w-70 w-full">
+          <div
+            className="absolute top-1 rounded-full p-2 bg-black m-3"
+            onClick={() => router.push("/menu")}
+          >
+            <FaArrowLeft className="text-white text-sm" />
+          </div>
+
           <CardHeader>
             <img
               src={productData?.imageUrl}
@@ -61,8 +77,8 @@ export default function DetailPage() {
 
           <div className="flex flex-col items-start justify-between py-4 px-4">
             <div className="flex items-center justify-between gap-2 w-full">
-              {variantProduct ? (
-                <span className="font-bold">Rp.{variantProduct.price}K</span>
+              {productVariant ? (
+                <span className="font-bold">Rp.{productVariant.price}K</span>
               ) : (
                 <span className="font-bold">
                   Rp.{productData?.variant[0].price}K
@@ -104,7 +120,9 @@ export default function DetailPage() {
 
             {/* add to cart button */}
             <div className="pt-4 w-full">
-              <Button className="w-full">Add to Cart</Button>
+              <Button className="w-full" onClick={handleAddToCart}>
+                {isPending ? "Loading..." : "Add To Cart"}
+              </Button>
             </div>
           </div>
         </div>

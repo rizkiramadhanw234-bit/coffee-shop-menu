@@ -5,23 +5,26 @@ import { Variant } from "../product-variant/variant.entity.js";
 
 @Entity("order")
 export class Order extends BaseEntity {
+  @Column({ name: "cart_id", type: "varchar", length: 36, nullable: true })
+  cartId: string;
+
   @Column({ name: "guest_id", type: "varchar", length: 36, nullable: true })
   guestId: string;
 
   @Column({ name: "order_code", type: "varchar", length: 100, nullable: true })
   orderCode: string;
 
-  @Column({ name: "cart_id", type: "varchar", length: 36, nullable: true })
-  cartId: string;
+  @Column({ name: "total_item", type: "int", default: 0, nullable: true })
+  totalItem: number;
 
-  @Column({ name: "variant_id", type: "varchar", length: 36, nullable: true })
-  variantId: string;
-
-  @Column({ type: "int" })
-  qty: number;
-
-  @Column({ name: "price_at", type: "decimal", precision: 10, scale: 2 })
-  priceAt: number;
+  @Column({
+    name: "total_price",
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
+  totalPrice: number;
 
   @Column({
     name: "status_order",
@@ -49,11 +52,4 @@ export class Order extends BaseEntity {
   })
   @JoinColumn({ name: "cart_id" })
   cart: Cart;
-
-  @ManyToOne(() => Variant, (variant) => variant.order, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  })
-  @JoinColumn({ name: "variant_id" })
-  variant: Variant;
 }

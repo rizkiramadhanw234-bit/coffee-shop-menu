@@ -24,17 +24,17 @@ export default function Category({ data }: CategoryProps) {
 
   useEffect(() => {
     if (data !== null) {
-      setForm((prev) => ({
-        ...prev,
+      setForm({
+        ...form,
         name: data.name,
         slug: data.slug,
-      }));
+      });
     } else {
-      setForm((prev) => ({
-        ...prev,
+      setForm({
+        ...form,
         name: "",
         slug: "",
-      }));
+      });
     }
   }, [data]);
 

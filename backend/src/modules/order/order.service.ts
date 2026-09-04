@@ -14,27 +14,32 @@ export async function createOrder(
   tableNo: number,
 ) {
   const cart = await cartRepo.findOne({
-    where: { id: cartId, guestId },
+    where: { id: cartId, guestId, cartStatus: "active" },
+    relations: { cartItem: true },
   });
   if (!cart) {
     throw new AppError("cart not found!", HTTP_STATUS.NOT_FOUND);
   }
 
-  if (!cart.variantId) {
-    throw new AppError("variant not found!", HTTP_STATUS.NOT_FOUND);
-  }
+  const totalItem = cart.cartItem.length;
+  const totalPrice = cart.cartItem.reduce(
+    (sum, item) => sum + Number(item.subTotal),
+    0,
+  );
 
   const order = new Order();
+  order.cartId = cart.id;
   order.guestId = guestId;
   order.orderCode = generateCode();
-  order.cartId = cart.id;
-  order.variantId = cart.variantId;
-  order.qty = cart.qty;
-  order.priceAt = Number(cart.subTotal);
+  order.totalItem = totalItem;
+  order.totalPrice = Number(totalPrice);
   order.statusOrder = "pending";
   order.customerName = customerName;
   order.tableNo = tableNo;
   await orderRepo.save(order);
+
+  cart.cartStatus = "checked_out";
+  await cartRepo.save(cart);
 
   if (!order) {
     order.statusOrder = "failed";
@@ -72,28 +77,38 @@ export async function deleteOrder(id: string, guestId: string) {
 export async function findOrders(guestId: string) {
   const orders = await orderRepo.find({
     where: { guestId },
-    relations: { variant: { product: true } },
+    relations: { cart: { cartItem: { variant: { product: true } } } },
   });
 
   if (orders.length === 0) {
     throw new AppError("order not found", HTTP_STATUS.NOT_FOUND);
   }
 
-  return { data: orders };
+  const res = orders.map((order) => ({
+    ...order,
+    totalPrice: Number(order.totalPrice),
+    cart: {
+      ...order.cart,
+      cartItem: order.cart.cartItem.map((data) => ({
+        ...data,
+        subTotal: Number(data.subTotal),
+        variant: {
+          ...data.variant,
+          price: Number(data.variant.price),
+        },
+      })),
+    },
+  }));
+
+  return { data: res };
 }
 
 // admin access
 export async function findPendingOrders(limit: number, offset: number) {
   const [orders, total] = await orderRepo.findAndCount({
     where: { statusOrder: "pending" },
-    relations: { variant: { product: true } },
-    select: {
-      variant: {
-        variantName: true,
-        price: true,
-        product: { productName: true, imageUrl: true },
-      },
-    },
+    relations: { cart: { cartItem: { variant: { product: true } } } },
+
     take: limit,
     skip: offset,
   });
@@ -104,10 +119,17 @@ export async function findPendingOrders(limit: number, offset: number) {
 
   const res = orders.map((order) => ({
     ...order,
-    priceAt: Number(order.priceAt),
-    variant: {
-      ...order.variant,
-      price: Number(order.variant.price),
+    totalPrice: Number(order.totalPrice),
+    cart: {
+      ...order.cart,
+      cartItem: order.cart.cartItem.map((data) => ({
+        ...data,
+        subTotal: Number(data.subTotal),
+        variant: {
+          ...data.variant,
+          price: Number(data.variant.price),
+        },
+      })),
     },
   }));
 
@@ -116,16 +138,9 @@ export async function findPendingOrders(limit: number, offset: number) {
 
 export async function findAllOrders(limit: number, offset: number) {
   const [orders, total] = await orderRepo.findAndCount({
+    relations: { cart: { cartItem: { variant: { product: true } } } },
     take: limit,
     skip: offset,
-    relations: { variant: { product: true } },
-    select: {
-      variant: {
-        variantName: true,
-        price: true,
-        product: { productName: true, imageUrl: true },
-      },
-    },
   });
 
   if (orders.length === 0) {
@@ -134,10 +149,17 @@ export async function findAllOrders(limit: number, offset: number) {
 
   const res = orders.map((order) => ({
     ...order,
-    priceAt: Number(order.priceAt),
-    variant: {
-      ...order.variant,
-      price: Number(order.variant.price),
+    totalPrice: Number(order.totalPrice),
+    cart: {
+      ...order.cart,
+      cartItem: order.cart.cartItem.map((data) => ({
+        ...data,
+        subTotal: Number(data.subTotal),
+        variant: {
+          ...data.variant,
+          price: Number(data.variant.price),
+        },
+      })),
     },
   }));
 

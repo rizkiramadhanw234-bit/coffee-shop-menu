@@ -3,7 +3,7 @@
 import { GoHomeFill } from "react-icons/go";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoIosWallet } from "react-icons/io";
-import { FaUser } from "react-icons/fa";
+import { FaHistory } from "react-icons/fa";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,7 +14,7 @@ export default function Navbar() {
     { name: "Home", href: "/menu", icon: GoHomeFill },
     { name: "Cart", href: "/cart", icon: FaShoppingCart },
     { name: "Order", href: "/order", icon: IoIosWallet },
-    { name: "Guest", href: "/order", icon: FaUser },
+    { name: "History", href: "/history", icon: FaHistory },
   ];
   return (
     <>

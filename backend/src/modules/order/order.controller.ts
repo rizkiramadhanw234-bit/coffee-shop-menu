@@ -66,6 +66,7 @@ export async function findOrders(req: Request, res: Response): Promise<void> {
     const { data } = await orderService.findOrders(guestId);
     res.status(200).json({ message: "find guest orders", data });
   } catch (error) {
+    console.log(error);
     if (error instanceof AppError) {
       res.status(error.statusCode).json({ message: error.message });
     } else {
