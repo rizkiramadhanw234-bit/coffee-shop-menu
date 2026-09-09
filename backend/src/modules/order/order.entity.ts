@@ -1,7 +1,7 @@
 import { BaseEntity } from "../../entities/base.js";
-import { Entity, ManyToOne, Column, JoinColumn } from "typeorm";
+import { Entity, ManyToOne, Column, JoinColumn, OneToMany } from "typeorm";
 import { Cart } from "../cart/cart.entity.js";
-import { Variant } from "../product-variant/variant.entity.js";
+import { Payment } from "../payment/payment.entity.js";
 
 @Entity("order")
 export class Order extends BaseEntity {
@@ -35,6 +35,14 @@ export class Order extends BaseEntity {
   statusOrder: string;
 
   @Column({
+    name: "payment_status",
+    type: "enum",
+    enum: ["pending", "paid", "failed", "refunded"],
+    default: "pending",
+  })
+  paymentStatus: string;
+
+  @Column({
     name: "customer_name",
     type: "varchar",
     length: 150,
@@ -52,4 +60,7 @@ export class Order extends BaseEntity {
   })
   @JoinColumn({ name: "cart_id" })
   cart: Cart;
+
+  @OneToMany(() => Payment, (payment) => payment.order)
+  payment: Payment[];
 }

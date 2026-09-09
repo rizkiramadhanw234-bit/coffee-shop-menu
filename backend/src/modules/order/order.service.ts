@@ -34,14 +34,15 @@ export async function createOrder(
   order.totalItem = totalItem;
   order.totalPrice = Number(totalPrice);
   order.statusOrder = "pending";
+  order.paymentStatus = "pending";
   order.customerName = customerName;
   order.tableNo = tableNo;
-  await orderRepo.save(order);
+  const newOrder = await orderRepo.save(order);
 
   cart.cartStatus = "checked_out";
   await cartRepo.save(cart);
 
-  if (!order) {
+  if (!newOrder) {
     order.statusOrder = "failed";
     await orderRepo.save(order);
     throw new AppError("order failed", HTTP_STATUS.BAD_REQUEST);
@@ -183,7 +184,7 @@ export async function updateStatusOrder(id: string, statusOrder: string) {
 
 export async function deleteOrderAdmin(id: string) {
   const order = await orderRepo.findOneBy({ id });
-  if (order) {
+  if (!order) {
     throw new AppError("order not found", HTTP_STATUS.NOT_FOUND);
   }
 

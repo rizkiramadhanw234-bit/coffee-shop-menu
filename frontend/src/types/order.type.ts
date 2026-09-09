@@ -2,6 +2,7 @@ import { BaseType } from "./base.type";
 import { CartItemType } from "./cart.type";
 
 export type EnumStatus = "pending" | "confirmed" | "failed" | "cancelled";
+export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
 
 export interface OrderRequest {
   cartId: string;
@@ -22,6 +23,7 @@ export interface OrderType extends BaseType {
   totalItem: number;
   totalPrice: number;
   statusOrder: EnumStatus | string;
+  paymentStatus: PaymentStatus | string;
   customerName: string;
   tableNo: number;
   cart: CartType;

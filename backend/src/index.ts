@@ -17,6 +17,7 @@ import variantRouter from "./modules/product-variant/variant.route.js";
 import cartRouter from "./modules/cart/cart.route.js";
 import orderRouter from "./modules/order/order.route.js";
 import adminRouter from "./modules/admin/admin.route.js";
+import paymentRouter from "./modules/payment/payment.route.js";
 
 dbConnection();
 
@@ -44,6 +45,7 @@ app.use("/api/variant", variantRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/payment", paymentRouter);
 
 server.listen(process.env.PORT, () => {
   console.log("server is running on port:", process.env.PORT);

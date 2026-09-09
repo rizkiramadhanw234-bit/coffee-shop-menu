@@ -17,8 +17,10 @@ import { useRouter } from "next/navigation";
 export default function DetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+
   const { data: product, isLoading } = useFindProductById(id);
   const productData = product ?? null;
+
   const [selectedVariantId, setSelectedVariantId] = useState("");
   const [count, setCount] = useState(1);
 
@@ -58,7 +60,7 @@ export default function DetailPage() {
       ) : (
         <div className="md:w-70 w-full">
           <div
-            className="absolute top-1 rounded-full p-2 bg-black m-3"
+            className="absolute top-0 rounded-full p-2 bg-black m-3"
             onClick={() => router.push("/menu")}
           >
             <FaArrowLeft className="text-white text-sm" />

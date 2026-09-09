@@ -3,6 +3,7 @@ import * as orderService from "./order.service.js";
 import { AppError } from "../../utils/error.js";
 import { getIO } from "../../socket/index.js";
 import { SocketRoom, SocketEvents } from "../../types/socket.type.js";
+
 export async function createOrder(req: Request, res: Response): Promise<void> {
   try {
     const { cartId, customerName, tableNo } = req.body as {

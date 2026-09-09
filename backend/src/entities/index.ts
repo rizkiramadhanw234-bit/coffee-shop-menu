@@ -7,6 +7,7 @@ import { Admin } from "../modules/admin/admin.entity.js";
 import { Token } from "../modules/admin/token.entity.js";
 import { Session } from "../modules/admin/session.entity.js";
 import { Cart } from "../modules/cart/cart.entity.js";
+import { Payment } from "../modules/payment/payment.entity.js";
 
 export const entities = [
   Variant,
@@ -18,4 +19,5 @@ export const entities = [
   Token,
   Session,
   Cart,
+  Payment,
 ];

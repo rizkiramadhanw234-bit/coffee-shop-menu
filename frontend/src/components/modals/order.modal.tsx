@@ -61,7 +61,7 @@ export default function OrderModal({ cartId }: OrderProps) {
             <DialogHeader>
               <DialogTitle>Order</DialogTitle>
               <DialogDescription className="pb-2">
-                Silahkan isi data anda order anda.
+                Silahkan isi data order anda.
               </DialogDescription>
             </DialogHeader>
             <FieldGroup>
