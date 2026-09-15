@@ -47,8 +47,12 @@ export function useFindAllCarts() {
   return useQuery({
     queryKey: cartKeys.cart,
     queryFn: async () => {
-      const res = await findCarts();
-      return res;
+      try {
+        const res = await findCarts();
+        return res;
+      } catch (error) {
+        return [];
+      }
     },
   });
 }

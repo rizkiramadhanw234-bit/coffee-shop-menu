@@ -16,13 +16,14 @@ import {
 } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
 import PaymentModal from "@/components/modals/payment.modal";
+import CancelOrderModal from "@/components/modals/cancel.order.modal";
 
 export default function OrderPage() {
   const router = useRouter();
   const { data: orders, isPending } = useFindGuestOrders();
 
   const pendingOrders =
-    orders?.filter((data) => data.paymentStatus === "pending") ?? [];
+    orders?.filter((data) => data.statusOrder === "pending") ?? [];
 
   return (
     <div className="min-h-screen">
@@ -74,7 +75,11 @@ export default function OrderPage() {
                       </p>
                     </div>
                     <div className="px-4 py-2 bg-amber-100 rounded-2xl">
-                      <p className="text-xs text-amber-600">pending</p>
+                      {pendingOrders.map((data) => (
+                        <p key={data.id} className="text-xs text-amber-600">
+                          {data.statusOrder}
+                        </p>
+                      ))}
                     </div>
                   </div>
                 </Card>
@@ -115,6 +120,9 @@ export default function OrderPage() {
                         <div>
                           <p>Total Items</p>
                           <p>{data.totalItem}</p>
+                        </div>
+                        <div>
+                          <CancelOrderModal orderId={data.id} />
                         </div>
                       </Card>
                     ))}

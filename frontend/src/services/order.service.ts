@@ -7,7 +7,7 @@ export async function createOrder(data: OrderRequest) {
 }
 
 export async function cancelOrder(id: string) {
-  const res = await axiosApi.patch(`/order/cancelled/${id}`);
+  const res = await axiosApi.patch(`/order/cancel/${id}`);
   return res.data;
 }
 

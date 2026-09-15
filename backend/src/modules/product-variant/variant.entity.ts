@@ -30,7 +30,4 @@ export class Variant extends BaseEntity {
 
   @OneToMany(() => CartItem, (cart) => cart.variant)
   cart: CartItem[];
-
-  @OneToMany(() => Order, (order) => order.variant)
-  order: Order[];
 }

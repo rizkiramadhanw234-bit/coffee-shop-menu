@@ -43,8 +43,12 @@ export function useFindGuestOrders() {
   return useQuery({
     queryKey: orderKeys.oders,
     queryFn: async () => {
-      const res = await findGuestOrders();
-      return res;
+      try {
+        const res = await findGuestOrders();
+        return res;
+      } catch (error) {
+        return [];
+      }
     },
   });
 }

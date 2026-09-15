@@ -187,7 +187,6 @@ export async function deleteOrderAdmin(id: string) {
   if (!order) {
     throw new AppError("order not found", HTTP_STATUS.NOT_FOUND);
   }
-
   await orderRepo.delete(id);
 
   return;

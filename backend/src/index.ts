@@ -27,6 +27,7 @@ initSocket(server);
 
 app.use(compression());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
@@ -46,6 +47,10 @@ app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/payment", paymentRouter);
+
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ message: "not found" });
+});
 
 server.listen(process.env.PORT, () => {
   console.log("server is running on port:", process.env.PORT);

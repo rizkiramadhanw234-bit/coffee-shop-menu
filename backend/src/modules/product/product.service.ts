@@ -76,7 +76,7 @@ export async function findAllProducts(
       category: { name: true, slug: true },
       variant: { id: true, variantName: true, price: true },
     },
-    order: { productName: "DESC" },
+    order: { productName: "ASC" },
   });
   if (product.length === 0) {
     throw new AppError("product not found!", HTTP_STATUS.NOT_FOUND);

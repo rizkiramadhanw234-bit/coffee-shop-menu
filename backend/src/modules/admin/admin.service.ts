@@ -52,11 +52,15 @@ export async function loginAdmin(
     },
   );
 
-  const tokenRandomString = crypto.randomUUID();
+  const tokenRandomString = crypto.randomBytes(32).toString("hex");
+  const hashToken = crypto
+    .createHash("sha256")
+    .update(tokenRandomString)
+    .digest("hex");
   const expiredAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   const token = new Token();
-  token.refreshToken = tokenRandomString;
+  token.refreshToken = hashToken;
   token.expiredAt = expiredAt;
   token.adminId = admin.id;
   await tokenRepo.save(token);
@@ -103,10 +107,15 @@ export async function refreshToken(refreshToken: string) {
     { expiresIn: process.env.JWT_EXPIRES_IN as StringValue },
   );
 
-  const tokenRandomString = crypto.randomUUID();
+  const tokenRandomString = crypto.randomBytes(32).toString("hex");
+  const hashToken = crypto
+    .createHash("sha256")
+    .update(tokenRandomString)
+    .digest("hex");
+
   const expiredAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
-  token.refreshToken = tokenRandomString;
+  token.refreshToken = hashToken;
   token.expiredAt = expiredAt;
   token.adminId = admin.id;
   await tokenRepo.save(token);
