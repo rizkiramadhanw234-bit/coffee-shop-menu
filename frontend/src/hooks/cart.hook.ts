@@ -51,7 +51,7 @@ export function useFindAllCarts() {
         const res = await findCarts();
         return res;
       } catch (error) {
-        return [];
+        return null;
       }
     },
   });

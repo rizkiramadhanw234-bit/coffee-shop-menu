@@ -8,14 +8,18 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useProductStore } from "@/stores/product.store";
 
 type PaginationProps = {
+  page: number;
+  setPage: (page: number) => void;
   totalPages: number;
 };
 
-export default function PaginationPage({ totalPages }: PaginationProps) {
-  const { page, setPage } = useProductStore();
+export default function PaginationPage({
+  page,
+  setPage,
+  totalPages,
+}: PaginationProps) {
   return (
     <>
       <Pagination>
@@ -70,7 +74,9 @@ export default function PaginationPage({ totalPages }: PaginationProps) {
 
           <PaginationItem>
             <PaginationNext
-              onClick={() => setPage(Math.min(page + 1, totalPages))}
+              onClick={() =>
+                setPage(Math.min(page + 1, Math.max(totalPages, 1)))
+              }
             />
           </PaginationItem>
         </PaginationContent>

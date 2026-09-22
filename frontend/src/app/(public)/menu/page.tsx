@@ -126,7 +126,11 @@ export default function MenuPage() {
                 </div>
               )}
               <div className="pt-4 pb-17">
-                <PaginationPage totalPages={totalPages} />
+                <PaginationPage
+                  page={page}
+                  setPage={setPage}
+                  totalPages={totalPages}
+                />
               </div>
             </>
           )}

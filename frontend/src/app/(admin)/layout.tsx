@@ -1,5 +1,7 @@
 import AuthProvider from "@/providers/auth.provider";
 import TanstackProvider from "@/providers/tanstack.provider";
+import SidebarApp from "@/components/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function ProtectedLayout({
   children,
@@ -8,9 +10,14 @@ export default function ProtectedLayout({
 }) {
   return (
     <>
-      <TanstackProvider>
-        <AuthProvider>{children}</AuthProvider>
-      </TanstackProvider>
+      <AuthProvider>
+        <TanstackProvider>
+          <SidebarProvider>
+            <SidebarApp />
+            <div className="p-4 w-full">{children}</div>
+          </SidebarProvider>
+        </TanstackProvider>
+      </AuthProvider>
     </>
   );
 }

@@ -4,7 +4,6 @@ import {
   cancelOrder,
   createOrder,
   deleteOrder,
-  findPendingOrders,
   findAllOrders,
   deleteOrderAdmin,
   updateStatusOrder,
@@ -21,7 +20,6 @@ router.patch("/cancel/:id", guestSession, cancelOrder);
 router.delete("/delete/:id", guestSession, deleteOrder);
 
 // admin
-router.get("/pending", authMiddleware, isAdmin, findPendingOrders);
 router.get("/all", authMiddleware, isAdmin, findAllOrders);
 router.patch("/update-status/:id", authMiddleware, isAdmin, updateStatusOrder);
 router.delete("/delete-order/:id", authMiddleware, deleteOrderAdmin);

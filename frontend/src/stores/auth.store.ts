@@ -2,7 +2,7 @@ import { create } from "zustand";
 import type { AdminDto } from "@/types/admin.type";
 import type { LoginAdminResponse } from "@/types/auth.types";
 
-export interface AuthStoreType {
+interface AuthStoreType {
   accessToken: string | null;
   admin: AdminDto | null;
   loading: boolean;

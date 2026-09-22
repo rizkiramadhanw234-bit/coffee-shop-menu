@@ -18,6 +18,7 @@ import cartRouter from "./modules/cart/cart.route.js";
 import orderRouter from "./modules/order/order.route.js";
 import adminRouter from "./modules/admin/admin.route.js";
 import paymentRouter from "./modules/payment/payment.route.js";
+import authRouter from "./modules/auth/auth.route.js";
 
 dbConnection();
 
@@ -47,6 +48,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/payment", paymentRouter);
+app.use("/api/auth", authRouter);
 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ message: "not found" });

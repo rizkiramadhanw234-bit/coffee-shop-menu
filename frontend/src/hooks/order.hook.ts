@@ -4,18 +4,29 @@ import {
   createOrder,
   cancelOrder,
   findGuestOrders,
+  findAllOrders,
 } from "@/services/order.service";
 
 export const orderKeys = {
   oders: ["orders"],
+  list: (
+    limit: number,
+    offset: number,
+    customerName: string,
+    statusOrder: string,
+  ) =>
+    [
+      ...orderKeys.oders,
+      "list",
+      { limit, offset, customerName, statusOrder },
+    ] as const,
 };
 
 export function useCreateOrder() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: OrderRequest) => {
-      const res = await createOrder(data);
-      return res;
+      return await createOrder(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: orderKeys.oders });
@@ -30,8 +41,7 @@ export function useCancelOrder(id: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      const res = await cancelOrder(id);
-      return res;
+      return await cancelOrder(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: orderKeys.oders });
@@ -44,10 +54,28 @@ export function useFindGuestOrders() {
     queryKey: orderKeys.oders,
     queryFn: async () => {
       try {
-        const res = await findGuestOrders();
-        return res;
+        return await findGuestOrders();
       } catch (error) {
-        return [];
+        return null;
+      }
+    },
+  });
+}
+
+// admin
+export function useFindAllOrders(
+  limit: number,
+  offset: number,
+  customerName: string,
+  statusOrder: string,
+) {
+  return useQuery({
+    queryKey: orderKeys.list(limit, offset, customerName, statusOrder),
+    queryFn: async () => {
+      try {
+        return await findAllOrders(limit, offset, customerName, statusOrder);
+      } catch (error) {
+        return null;
       }
     },
   });

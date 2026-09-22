@@ -1,5 +1,4 @@
 import { BaseType } from "./base.type";
-import { CartItemType } from "./cart.type";
 
 export type EnumStatus = "pending" | "confirmed" | "failed" | "cancelled";
 export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
@@ -10,13 +9,7 @@ export interface OrderRequest {
   tableNo: number;
 }
 
-export interface CartType extends BaseType {
-  guestId: string;
-  cartStatus: string;
-  cartItem: CartItemType[];
-}
-
-export interface OrderType extends BaseType {
+export interface OrderCreateType extends BaseType {
   cartId: string;
   guestId: string;
   orderCode: string;
@@ -26,10 +19,64 @@ export interface OrderType extends BaseType {
   paymentStatus: PaymentStatus | string;
   customerName: string;
   tableNo: number;
-  cart: CartType;
 }
 
-export interface OrderResponse {
+export interface OrderCreateResponse {
   message: string;
-  data: OrderType[];
+  data: OrderCreateType;
+}
+
+export interface VariantType extends BaseType {
+  productId: string;
+  variantName: string;
+  price: number;
+  product: ProductType;
+}
+
+export interface ProductType extends BaseType {
+  productName: string;
+  description: string;
+  imageUrl: string;
+  categoryId: string;
+  status: string;
+}
+
+export interface CartItemDetailType extends BaseType {
+  cartId: string;
+  guestId: string;
+  variantId: string;
+  qty: number;
+  subTotal: number;
+  variant: VariantType;
+}
+
+export interface CartDetailType extends BaseType {
+  guestId: string;
+  cartStatus: string;
+  cartItem: CartItemDetailType[];
+}
+
+export interface OrderDetailType extends BaseType {
+  cartId: string;
+  guestId: string;
+  orderCode: string;
+  totalItem: number;
+  totalPrice: number;
+  statusOrder: EnumStatus | string;
+  paymentStatus: PaymentStatus | string;
+  customerName: string;
+  tableNo: number;
+  cart: CartDetailType;
+}
+
+export interface MetaType {
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface OrderFindAllResponse {
+  message: string;
+  data: OrderDetailType[];
+  meta: MetaType;
 }

@@ -1,8 +1,12 @@
 import { axiosApi } from "./axios";
-import type { OrderResponse, OrderRequest } from "@/types/order.type";
+import type {
+  OrderRequest,
+  OrderCreateResponse,
+  OrderFindAllResponse,
+} from "@/types/order.type";
 
 export async function createOrder(data: OrderRequest) {
-  const res = await axiosApi.post<OrderResponse>("/order/create", data);
+  const res = await axiosApi.post<OrderCreateResponse>("/order/create", data);
   return res.data.data;
 }
 
@@ -12,6 +16,19 @@ export async function cancelOrder(id: string) {
 }
 
 export async function findGuestOrders() {
-  const res = await axiosApi.get<OrderResponse>("/order");
+  const res = await axiosApi.get<OrderFindAllResponse>("/order");
   return res.data.data;
+}
+
+// admin
+export async function findAllOrders(
+  limit: number,
+  offset: number,
+  customerName: string,
+  statusOrder: string,
+) {
+  const res = await axiosApi.get<OrderFindAllResponse>("/order/all", {
+    params: { limit, offset, customerName, statusOrder },
+  });
+  return res.data;
 }

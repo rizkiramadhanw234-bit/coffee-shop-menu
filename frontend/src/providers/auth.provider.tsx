@@ -17,13 +17,12 @@ export default function AuthProvider({
 
   useEffect(() => {
     axiosApi
-      .post("/admin/refresh-token")
+      .post<LoginAdminResponse>("/admin/refresh-token")
       .then((res) => {
-        const data = res.data as LoginAdminResponse;
-        if (!data.accessToken) {
+        if (!res.data.accessToken) {
           router.push("/auth/login");
         }
-        setAdmin(data);
+        setAdmin(res.data);
         setLoading(false);
       })
       .catch(() => {
@@ -31,11 +30,11 @@ export default function AuthProvider({
         setLoading(false);
         router.push("/auth/login");
       });
-  }, [setAdmin]);
+  }, []);
 
   if (loading || !isHydrated) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center">
         <SpinnerCustom />
       </div>
     );

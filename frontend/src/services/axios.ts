@@ -20,7 +20,7 @@ axiosApi.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const isRefreshRequest = originalRequest.url?.includes(
-      "/user/refresh-token",
+      "/auth/refresh-token",
     );
     if (
       error.response?.status === 401 &&
@@ -29,7 +29,7 @@ axiosApi.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const response = await axiosApi.post("/user/refresh-token");
+        const response = await axiosApi.post("/auth/refresh-token");
         const { accessToken } = response.data;
         useAuthStore.getState().setAdmin(response.data);
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;

@@ -23,15 +23,13 @@ export interface DecrementRequest {
   variantId: string;
 }
 
-export interface VariantType {
-  id: string;
+export interface VariantType extends BaseType {
   variantName: string;
   price: number;
   product: ProductType;
 }
 
-export interface CartItemType {
-  id: string;
+export interface CartItemType extends BaseType {
   variantId: string;
   qty: number;
   subTotal: number;

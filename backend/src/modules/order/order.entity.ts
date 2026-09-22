@@ -29,7 +29,7 @@ export class Order extends BaseEntity {
   @Column({
     name: "status_order",
     type: "enum",
-    enum: ["pending", "confirmed", "failed", "cancelled"],
+    enum: ["pending", "process", "confirmed", "failed", "cancelled"],
     default: "pending",
   })
   statusOrder: string;

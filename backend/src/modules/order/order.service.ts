@@ -3,6 +3,7 @@ import { Order } from "./order.entity.js";
 import { Cart } from "../cart/cart.entity.js";
 import { AppError, HTTP_STATUS } from "../../utils/error.js";
 import { generateCode } from "../../utils/orderCode.js";
+import { Like } from "typeorm";
 
 const orderRepo = appDataSource.getRepository(Order);
 const cartRepo = appDataSource.getRepository(Cart);
@@ -75,10 +76,16 @@ export async function deleteOrder(id: string, guestId: string) {
   return;
 }
 
-export async function findOrders(guestId: string) {
-  const orders = await orderRepo.find({
+export async function findOrders(
+  guestId: string,
+  limit: number,
+  offset: number,
+) {
+  const [orders, total] = await orderRepo.findAndCount({
     where: { guestId },
     relations: { cart: { cartItem: { variant: { product: true } } } },
+    take: limit,
+    skip: offset,
   });
 
   if (orders.length === 0) {
@@ -101,47 +108,28 @@ export async function findOrders(guestId: string) {
     },
   }));
 
-  return { data: res };
-}
-
-// admin access
-export async function findPendingOrders(limit: number, offset: number) {
-  const [orders, total] = await orderRepo.findAndCount({
-    where: { statusOrder: "pending" },
-    relations: { cart: { cartItem: { variant: { product: true } } } },
-
-    take: limit,
-    skip: offset,
-  });
-
-  if (orders.length === 0) {
-    throw new AppError("orders not found", HTTP_STATUS.NOT_FOUND);
-  }
-
-  const res = orders.map((order) => ({
-    ...order,
-    totalPrice: Number(order.totalPrice),
-    cart: {
-      ...order.cart,
-      cartItem: order.cart.cartItem.map((data) => ({
-        ...data,
-        subTotal: Number(data.subTotal),
-        variant: {
-          ...data.variant,
-          price: Number(data.variant.price),
-        },
-      })),
-    },
-  }));
-
   return { data: res, meta: { total, limit, offset } };
 }
 
-export async function findAllOrders(limit: number, offset: number) {
+// admin access
+export async function findAllOrders(
+  limit: number,
+  offset: number,
+  customerName: string,
+  statusOrder: string,
+) {
+  const where = {
+    ...(customerName && { customerName: Like(`%${customerName}%`) }),
+    ...(statusOrder && { statusOrder }),
+  };
   const [orders, total] = await orderRepo.findAndCount({
+    where,
     relations: { cart: { cartItem: { variant: { product: true } } } },
     take: limit,
     skip: offset,
+    order: {
+      customerName: "ASC",
+    },
   });
 
   if (orders.length === 0) {

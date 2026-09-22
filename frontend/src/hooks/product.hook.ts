@@ -21,8 +21,12 @@ export function useFindAllProducts(
   return useQuery({
     queryKey: productKeys.list(limit, offset, productName, slug),
     queryFn: async () => {
-      const res = await findAllProducts(limit, offset, productName, slug);
-      return res;
+      try {
+        const res = await findAllProducts(limit, offset, productName, slug);
+        return res;
+      } catch (error) {
+        return null;
+      }
     },
     staleTime: 1000 * 60 * 5,
   });

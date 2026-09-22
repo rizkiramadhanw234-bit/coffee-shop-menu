@@ -64,8 +64,14 @@ export async function deleteOrder(req: Request, res: Response): Promise<void> {
 export async function findOrders(req: Request, res: Response): Promise<void> {
   try {
     const guestId = req.guestId as string;
-    const { data } = await orderService.findOrders(guestId);
-    res.status(200).json({ message: "find guest orders", data });
+    const limit = Number(req.query.limit) || 10;
+    const offset = Number(req.query.offset) || 0;
+    const { data, meta } = await orderService.findOrders(
+      guestId,
+      limit,
+      offset,
+    );
+    res.status(200).json({ message: "find guest orders", data, meta });
   } catch (error) {
     console.log(error);
     if (error instanceof AppError) {
@@ -77,24 +83,6 @@ export async function findOrders(req: Request, res: Response): Promise<void> {
 }
 
 // admin access
-export async function findPendingOrders(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    const limit = Number(req.query.limit) || 10;
-    const offset = Number(req.query.offset) || 0;
-    const { data, meta } = await orderService.findPendingOrders(limit, offset);
-    res.status(200).json({ message: "find pending orders", data, meta });
-  } catch (error) {
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: "internal server error" });
-    }
-  }
-}
-
 export async function findAllOrders(
   req: Request,
   res: Response,
@@ -102,7 +90,16 @@ export async function findAllOrders(
   try {
     const limit = Number(req.query.limit) || 10;
     const offset = Number(req.query.offset) || 0;
-    const { data, meta } = await orderService.findAllOrders(limit, offset);
+    const { customerName, statusOrder } = req.query as {
+      customerName: string;
+      statusOrder: string;
+    };
+    const { data, meta } = await orderService.findAllOrders(
+      limit,
+      offset,
+      customerName,
+      statusOrder,
+    );
     res.status(200).json({ message: "find all orders", data, meta });
   } catch (error) {
     if (error instanceof AppError) {
