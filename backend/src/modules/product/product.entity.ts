@@ -25,7 +25,7 @@ export class Product extends BaseEntity {
   @Column({
     type: "enum",
     enum: ["available", "unvailable"],
-    default: "available",
+    default: "unvailable",
     nullable: true,
   })
   status: string;

@@ -51,7 +51,7 @@ app.use("/api/payment", paymentRouter);
 app.use("/api/auth", authRouter);
 
 app.use((_req: Request, res: Response) => {
-  res.status(404).json({ message: "not found" });
+  res.status(404).json({ message: "route not found" });
 });
 
 server.listen(process.env.PORT, () => {

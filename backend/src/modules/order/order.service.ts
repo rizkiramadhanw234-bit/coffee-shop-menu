@@ -155,9 +155,33 @@ export async function findAllOrders(
   return { data: res, meta: { total, limit, offset } };
 }
 
+export async function findOrderById(id: string) {
+  const order = await orderRepo.findOne({
+    where: { id },
+    relations: { cart: { cartItem: { variant: { product: true } } } },
+  });
+  if (!order) {
+    throw new AppError("order not found", HTTP_STATUS.NOT_FOUND);
+  }
+
+  const totalPrice = Number(order.totalPrice);
+  const cartItem = order.cart.cartItem.map((data) => ({
+    ...data,
+    subTotal: Number(data.subTotal),
+    variant: {
+      ...data.variant,
+      price: Number(data.variant.price),
+    },
+  }));
+
+  const res = { ...order, totalPrice, cart: { ...order.cart, cartItem } };
+
+  return { data: res };
+}
+
 export async function updateStatusOrder(id: string, statusOrder: string) {
   const order = await orderRepo.findOne({
-    where: { id, statusOrder: "pending" },
+    where: { id },
   });
 
   if (!order) {
@@ -168,6 +192,21 @@ export async function updateStatusOrder(id: string, statusOrder: string) {
   await orderRepo.save(order);
 
   return { data: order.statusOrder };
+}
+
+export async function updatePaymentStatus(id: string, paymentStatus: string) {
+  const order = await orderRepo.findOne({
+    where: { id },
+  });
+
+  if (!order) {
+    throw new AppError("Order not found", HTTP_STATUS.NOT_FOUND);
+  }
+
+  order.paymentStatus = paymentStatus;
+  await orderRepo.save(order);
+
+  return { data: order.paymentStatus };
 }
 
 export async function deleteOrderAdmin(id: string) {

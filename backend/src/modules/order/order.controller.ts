@@ -110,6 +110,23 @@ export async function findAllOrders(
   }
 }
 
+export async function findOrderById(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const { id } = req.params as { id: string };
+    const { data } = await orderService.findOrderById(id);
+    res.status(200).json({ message: "find order by id", data });
+  } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "internal server error" });
+    }
+  }
+}
+
 export async function updateStatusOrder(
   req: Request,
   res: Response,
@@ -121,6 +138,24 @@ export async function updateStatusOrder(
     res.status(200).json({ message: "updated status order", data });
   } catch (error) {
     console.log(error);
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "internal server error" });
+    }
+  }
+}
+
+export async function updatePaymentStatus(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const { id } = req.params as { id: string };
+    const { paymentStatus } = req.body as { paymentStatus: string };
+    const { data } = await orderService.updatePaymentStatus(id, paymentStatus);
+    res.status(200).json({ message: "payment status updated", data });
+  } catch (error) {
     if (error instanceof AppError) {
       res.status(error.statusCode).json({ message: error.message });
     } else {

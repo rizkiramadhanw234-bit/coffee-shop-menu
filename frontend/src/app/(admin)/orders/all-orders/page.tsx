@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/empty";
 import { FaDatabase } from "react-icons/fa6";
 import { SpinnerCustom } from "@/components/loading";
+import { Badge } from "@/components/ui/badge";
 
 const statusTabs = [
   { label: "Pending", value: "pending" },
@@ -139,7 +140,7 @@ export default function AllOrders() {
           <div className="flex items-center justify-end gap-4 py-4">
             <Input
               className="w-50"
-              placeholder="Cari nama pesanan..."
+              placeholder="Cari nama customer..."
               onChange={handleSearch}
               value={search}
             />
@@ -182,6 +183,7 @@ export default function AllOrders() {
                     </TableCaption>
                     <TableHeader className="bg-gray-200">
                       <TableRow>
+                        <TableHead className="w-12">No.</TableHead>
                         <TableHead className="w-45">Order Code</TableHead>
                         <TableHead>Tgl & Waktu</TableHead>
                         <TableHead>Customer</TableHead>
@@ -192,8 +194,9 @@ export default function AllOrders() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {dataOrders.map((order) => (
+                      {dataOrders.map((order, i) => (
                         <TableRow key={order.id}>
+                          <TableCell>{i + 1}</TableCell>
                           <TableCell className="font-medium">
                             {order.orderCode}
                           </TableCell>
@@ -233,7 +236,27 @@ export default function AllOrders() {
                             ))}
                           </TableCell>
                           <TableCell>{order.totalPrice}</TableCell>
-                          <TableCell>{order.statusOrder}</TableCell>
+                          <TableCell>
+                            <Badge
+                              className={
+                                order.statusOrder.includes("pending")
+                                  ? "bg-amber-500"
+                                  : order.statusOrder.includes("confirmed")
+                                    ? "bg-green-500"
+                                    : order.statusOrder.includes("process")
+                                      ? "bg-amber-700"
+                                      : order.statusOrder.includes("failed")
+                                        ? "bg-red-500"
+                                        : order.statusOrder.includes(
+                                              "cancelled",
+                                            )
+                                          ? "bg-red-500"
+                                          : "bg-black"
+                              }
+                            >
+                              {order.statusOrder}
+                            </Badge>
+                          </TableCell>
                           <TableCell className="text-right">
                             <OrderDetail orderId={order.id} />
                           </TableCell>

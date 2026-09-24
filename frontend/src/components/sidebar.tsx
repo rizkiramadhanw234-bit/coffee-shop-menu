@@ -46,7 +46,7 @@ export default function SidebarApp() {
     },
     {
       group: "Menu",
-      items: [{ title: "Menu", href: "/menu", icon: MdRestaurantMenu }],
+      items: [{ title: "Menu", href: "/menu-product", icon: MdRestaurantMenu }],
     },
     {
       group: "Categories",

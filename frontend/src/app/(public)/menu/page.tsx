@@ -30,7 +30,7 @@ export default function MenuPage() {
     useProductStore();
   const [search, setSearch] = useState(productName ?? "");
 
-  const limit = 6;
+  const limit = 10;
   const offset = (page - 1) * limit;
 
   // products data
@@ -41,7 +41,11 @@ export default function MenuPage() {
     slug,
   );
 
-  const productData = product?.data ?? [];
+  const availableProduct = product?.data.filter(
+    (productStatus) => productStatus.status === "available",
+  );
+
+  const productData = availableProduct ?? [];
   const totalProducts = product?.meta.total ?? 0;
   const totalPages = Math.ceil(totalProducts / limit);
 

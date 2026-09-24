@@ -5,7 +5,7 @@ export type EnumStatus = "available" | "unavailable";
 export interface ProductRequest {
   productName: string;
   description: string;
-  imageUrl: string;
+  imageUrl: string | File;
   categoryId: string;
   status: EnumStatus | string;
 }
@@ -48,4 +48,9 @@ export interface ProductResponse {
 export interface ProductByIdResponse {
   message: string;
   data: ProductType;
+}
+
+export interface ProductRequestResponse {
+  message: string;
+  data: ProductRequest;
 }

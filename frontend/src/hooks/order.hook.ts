@@ -5,6 +5,10 @@ import {
   cancelOrder,
   findGuestOrders,
   findAllOrders,
+  findOrderById,
+  deleteOrder,
+  updatePaymentStatus,
+  updateStatusOrder,
 } from "@/services/order.service";
 
 export const orderKeys = {
@@ -20,6 +24,8 @@ export const orderKeys = {
       "list",
       { limit, offset, customerName, statusOrder },
     ] as const,
+
+  detail: (id: string) => [...orderKeys.oders, id] as const,
 };
 
 export function useCreateOrder() {
@@ -77,6 +83,39 @@ export function useFindAllOrders(
       } catch (error) {
         return null;
       }
+    },
+  });
+}
+
+export function useFindOrderById(id: string) {
+  return useQuery({
+    queryKey: orderKeys.detail(id),
+    queryFn: async () => {
+      return await findOrderById(id);
+    },
+  });
+}
+
+export function useUpdateStatusOrder(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (statusOrder: string) => {
+      return await updateStatusOrder(id, statusOrder);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: orderKeys.oders });
+    },
+  });
+}
+
+export function useUpdatePaymentSatus(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (paymentStatus: string) => {
+      return await updatePaymentStatus(id, paymentStatus);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: orderKeys.oders });
     },
   });
 }

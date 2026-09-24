@@ -80,3 +80,8 @@ export interface OrderFindAllResponse {
   data: OrderDetailType[];
   meta: MetaType;
 }
+
+export interface OrderFindByIdResponse {
+  message: string;
+  data: OrderDetailType;
+}
